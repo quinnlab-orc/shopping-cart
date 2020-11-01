@@ -1,0 +1,23 @@
+.App {
+  text-align: center;
+}
+
+.monsterContainer {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.monsters {
+  border: 2px solid black;
+  border-radius: 15px;
+  width: 200px;
+}
+
+img {
+  height: 150px;
+  width: 150px;
+}
+
+input {
+  width: 25px;
+}
