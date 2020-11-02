@@ -2,15 +2,34 @@
   text-align: center;
 }
 
+.links {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  border: 1px solid darkslategray;
+  height: 50px;
+  background-color: lightcoral;
+}
+
+ul {
+  list-style: none;
+}
+
+li {
+  list-style: none;
+}
+
 .monsterContainer {
   display: flex;
   flex-flow: row wrap;
+  justify-content: space-around;
 }
 
 .monsters {
-  border: 2px solid black;
+  border: 2px solid darkslategray;
   border-radius: 15px;
   width: 200px;
+  box-shadow: 3px 3px lightgrey;
 }
 
 img {
@@ -20,4 +39,8 @@ img {
 
 input {
   width: 25px;
+}
+
+button {
+  margin-bottom: 10px;
 }
