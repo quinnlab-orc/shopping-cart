@@ -7,7 +7,7 @@ import imp from "./kitties/imp.jpg";
 import quasit from "./kitties/quasit.jpg";
 
 function App() {
-  const monsters = [
+  let monsters = [
     {
       name: "Carrion Crawler",
       src: carrion_crawler,
@@ -37,14 +37,18 @@ function App() {
   const [cart, setCart] = React.useState([]);
 
   const sendToCart = (index) => {
+    //this is where the remove from cart issue is
     setCart([...cart, monsters[index]]);
+
+    
+    console.log("sendToCart activated");
   };
 
   return (
     <Router>
       <div className="App">
         <nav>
-          <ul>
+          <ul className="links">
             <li>
               <Link to="/">Home</Link>
             </li>
@@ -59,7 +63,7 @@ function App() {
 
         <Switch>
           <Route path="/cart">
-            <ShoppingCart onAddedToCart={cart} />
+            <ShoppingCart onAddedToCart={cart}/>
           </Route>
           <Route path="/Shop">
             <ShopItems onMonsters={monsters} onAdd={sendToCart} />
@@ -82,20 +86,31 @@ const HomePage = () => {
 };
 
 const ShopItems = (props) => {
-  const monsters = props.onMonsters;
+  let monsters = props.onMonsters;
 
   const addToCart = (index) => {
     props.onAdd(index);
   };
 
+  const moreMonsters = (num, index) => {
+    monsters[index].quantity = num;
+  };
+
   return (
     <div className="monsterContainer">
-      {monsters.map(({ src, name, price }, index) => (
+      {monsters.map(({ src, name, price, quantity }, index) => (
         <div className="monsters" key={name}>
           <img src={src} alt={name}></img>
           <p>
             {name}, {price}gp
           </p>
+          <input
+            type="number"
+            min="1"
+            max="5"
+            placeholder={quantity}
+            onChange={(event) => moreMonsters(event.target.value, index)}
+          ></input>
           <button onClick={() => addToCart(index)}>Add to cart</button>
         </div>
       ))}
@@ -104,38 +119,24 @@ const ShopItems = (props) => {
 };
 
 const ShoppingCart = (props) => {
-  const monsters = props.onAddedToCart;
+  let monsters = props.onAddedToCart
 
   const [cart, setCart] = React.useState(monsters);
-
-  const [cost, setCost] = React.useState(0);
-
-  const FindCost = () => {
-    let foo = 0
-
-    for (let i = 0; i < monsters.length; i++) {
-      foo += monsters[i].price*monsters[i].quantity
-      setCost(foo)
-    }
-
-    return (
-      <div>{cost}</div>
-    )
-
-  };
-
 
   const moreMonsters = (num, index) => {
     monsters[index].quantity = num;
     setCart(monsters);
-    console.log(monsters[index]);
+  };
+
+  const removeMonster = (name) => {
+    const filteredMonsters = [...cart].filter((item) => item.name !== name);
+    setCart(filteredMonsters);
   };
 
   return (
     <div>
-      <h1>View your selected kitties here!</h1>
-      <FindCost />
-      {/* {cost} */}
+      <h1>View your selected monsters here!</h1>
+      <FindCost onCart={cart} />
 
       {cart.map(({ src, name, quantity, price }, index) => (
         <div className="monsters" key={index}>
@@ -145,15 +146,29 @@ const ShoppingCart = (props) => {
           </p>
           <input
             type="number"
-            min="1"
+            min="0"
             max="5"
-            value={quantity}
+            placeholder={quantity}
             onChange={(event) => moreMonsters(event.target.value, index)}
           ></input>
+
+          <button onClick={() => removeMonster(name)}>X</button>
         </div>
       ))}
     </div>
   );
+};
+
+const FindCost = (props) => {
+  const cart = props.onCart;
+
+  let cost = 0;
+
+  for (let i = 0; i < cart.length; i++) {
+    cost += cart[i].price * cart[i].quantity;
+  }
+
+  return <div>{cost}</div>;
 };
 
 export default App;
